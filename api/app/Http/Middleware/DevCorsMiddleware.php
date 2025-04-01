@@ -22,7 +22,7 @@ class DevCorsMiddleware
         }
 
         // Add CORS headers
-        $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000', true);
+        $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:3500', true);
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH', true);
         $response->headers->set('Access-Control-Allow-Headers', 'DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization, X-XSRF-TOKEN, Accept', true);
         $response->headers->set('Access-Control-Allow-Credentials', 'true', true);

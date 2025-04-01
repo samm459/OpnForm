@@ -36,7 +36,7 @@ services:
       XDEBUG_MODE: ${XDEBUG_MODE:-off}
       XDEBUG_CONFIG: client_host=host.docker.internal
       APP_URL: http://localhost
-      FRONT_URL: http://localhost:3000
+      FRONT_URL: http://localhost:3500
     depends_on:
       db:
         condition: service_healthy
@@ -47,7 +47,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.client
-    command: sh -c "npm install && NITRO_HOST=0.0.0.0 NITRO_PORT=3000 npm run dev"
+    command: sh -c "npm install && NITRO_HOST=0.0.0.0 NITRO_PORT=3500 npm run dev"
     volumes:
       - ./client:/app:delegated
       - /app/node_modules # Keep container's node_modules
@@ -55,7 +55,7 @@ services:
       NODE_ENV: development
       NUXT_PUBLIC_APP_ENV: development
       HOST: "0.0.0.0"
-      PORT: 3000
+      PORT: 3500
       # HMR settings
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
@@ -67,7 +67,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
-      - "3000:3000"      # Main dev server
+      - "3500:3500"      # Main dev server
       - "24678:24678"    # Vite HMR port
 
   db:

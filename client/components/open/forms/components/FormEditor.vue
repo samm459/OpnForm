@@ -1,70 +1,36 @@
 <template>
-  <div
-    v-if="form"
-    id="form-editor"
-    class="relative flex w-full flex-col grow max-h-screen"
-  >
+  <div v-if="form" id="form-editor" class="relative flex w-full flex-col grow max-h-screen">
     <!-- Loading overlay -->
-    <div
-      v-if="updateFormLoading"
-      class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center"
-    >
+    <div v-if="updateFormLoading" class="absolute inset-0 bg-white bg-opacity-70 z-50 flex items-center justify-center">
       <loader class="h-6 w-6 text-blue-500" />
     </div>
-    <div
-      class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center"
-    >
-      <Icon
-        name="heroicons:exclamation-circle"
-        class="w-10 h-10 text-nt-blue-dark"
-      />
+    <div class="border-b bg-white md:hidden fixed inset-0 w-full z-50 flex flex-col items-center justify-center">
+      <Icon name="heroicons:exclamation-circle" class="w-10 h-10 text-nt-blue-dark" />
       <div class="p-5 text-nt-blue-dark text-center">
         OpnForm is not optimized for mobile devices. Please open this page on a device with a larger screen.
       </div>
       <div>
-        <UButton
-          color="white"
-          size="lg"
-          class="w-full"
-          :to="{ name: 'home' }"
-        >
+        <UButton color="white" size="lg" class="w-full" :to="{ name: 'home' }">
           Back to dashboard
         </UButton>
       </div>
     </div>
 
-    <FormEditorNavbar
-      :back-button="backButton"
-      :update-form-loading="updateFormLoading"
-      :save-button-class="saveButtonClass"
-      @go-back="goBack"
-      @save-form="saveForm"
-    >
+    <FormEditorNavbar :back-button="backButton" :update-form-loading="updateFormLoading"
+      :save-button-class="saveButtonClass" @go-back="goBack" @save-form="saveForm">
       <template #before-save>
         <slot name="before-save" />
       </template>
     </FormEditorNavbar>
 
     <FormEditorErrorHandler>
-      <div
-        v-show="activeTab !== 2"
-        class="w-full flex grow overflow-y-scroll relative bg-white"
-      >
-        <div
-          class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5"
-        >
-          <VForm
-            size="sm"
-            @submit.prevent=""
-          >
-            <div
-              v-show="activeTab === 0"
-            >
+      <div v-show="activeTab !== 2" class="w-full flex grow overflow-y-scroll relative bg-white">
+        <div class="relative w-full shrink-0 overflow-y-scroll border-r md:w-1/2 md:max-w-xs lg:w-2/5">
+          <VForm size="sm" @submit.prevent="">
+            <div v-show="activeTab === 0">
               <FormFieldsEditor />
             </div>
-            <div
-              v-show="activeTab === 1"
-            >
+            <div v-show="activeTab === 1">
               <FormCustomization />
             </div>
           </VForm>
@@ -79,16 +45,10 @@
     <FormSettings v-show="activeTab === 2" />
 
     <!-- Form Error Modal -->
-    <FormErrorModal
-      :show="showFormErrorModal"
-      :validation-error-response="validationErrorResponse"
-      @close="showFormErrorModal = false"
-    />
+    <FormErrorModal :show="showFormErrorModal" :validation-error-response="validationErrorResponse"
+      @close="showFormErrorModal = false" />
   </div>
-  <div
-    v-else
-    class="flex justify-center items-center p-8"
-  >
+  <div v-else class="flex justify-center items-center p-8">
     <Loader class="w-6 h-6" />
   </div>
 </template>
@@ -154,14 +114,14 @@ export default {
         opnFetch('/open/forms/' + form.value.id + '/mobile-editor-email')
       }
     })
-    
+
 
     const { user } = storeToRefs(useAuthStore())
     const formsStore = useFormsStore()
     const { content: form } = storeToRefs(useWorkingFormStore())
     const { getCurrent: workspace } = storeToRefs(useWorkspacesStore())
     const workingFormStore = useWorkingFormStore()
-    
+
     return {
       appStore: useAppStore(),
       crisp: useCrisp(),
@@ -210,9 +170,9 @@ export default {
   methods: {
     goBack() {
       if (this.isEdit) {
-        useRouter().push({ name: 'forms-slug-show-submissions', params: {slug:this.form.slug} })
+        useRouter().push({ name: 'forms-slug-show-submissions', params: { slug: this.form.slug } })
       } else {
-        useRouter().push({ name: 'home' })
+        window.location.href = "http://localhost:3000/compliance/workflows"
       }
     },
     displayFormModificationAlert(responseData) {
@@ -237,7 +197,7 @@ export default {
       // Apply defaults to the form
       const defaultedData = setFormDefaults(this.form.data())
       this.form.fill(defaultedData)
-  
+
       this.form.properties = validatePropertiesLogic(this.form.properties)
       if (this.isGuest) {
         this.saveFormGuest()
@@ -257,10 +217,6 @@ export default {
         .then((data) => {
           this.formsStore.save(data.form)
           this.$emit("on-save")
-          this.$router.push({
-            name: "forms-slug-show-share",
-            params: { slug: this.form.slug },
-          })
           this.amplitude.logEvent("form_saved", {
             form_id: this.form.id,
             form_slug: this.form.slug,
